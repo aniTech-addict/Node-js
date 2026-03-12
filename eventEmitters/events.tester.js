@@ -9,3 +9,12 @@ myEmitter.on('Kaboom', ()=> {
 })
 
 myEmitter.emit('Kaboom');
+
+
+myEmitter.once('TriggerOnce', ()=> {
+	console.log("Broke once");
+})
+
+myEmitter.emit('TriggerOnce');
+myEmitter.emit('TriggerOnce');
+myEmitter.emit('TriggerOnce');
