@@ -26,9 +26,9 @@ class EventEmitter {
 	* remove the listiener(eventName) from the events arrays 
 	*/
 	removeEventListiener (eventName, fn) {
-		let lis = this.listiener[eventName];
+		let lis = this.listieners[eventName];
 		if(!lis) return this;
-		for( let i=listtiener.length()-1 ; i>=0 ; i++) {
+		for( let i=lis.length-1 ; i>=0 ; i++) {
 			if (lis[i] === fn) {
 				lis.splice(i,1);
 			}
@@ -42,10 +42,17 @@ class EventEmitter {
 	}
 	
 	/* 
-	 * Push and remove the object after one emit
+	 * adds a one-time listiener fn for the event named eventName.
+	 * The next time this eventName is triggered, remove the listiener.
 	 * */
-	once() {
-		
+	once(eventName, fn) {
+		this.listieners[eventName] = this.listieners[eventName] || [];
+		const onceWrapper = () => {
+			fn();
+			this.off(eventName, onceWrapper);
+		};
+		this.listieners[eventName].push(onceWrapper);
+		return this;
 	}
 	
 	/*
@@ -60,9 +67,17 @@ class EventEmitter {
 
 	}
 
-	listienerCount() {};
+	/* return the number of listieners fns for an  event */
+	listienerCount(eventName) {
+		let funs = this.listieners[eventName] || [];
+		return funs.length()
+	};
 
-	rawListieners() {};
+	/* return the list of listieners fns for an event*/
+	rawListieners() {
+		let funs = this.listieners[eventName] || [];
+		return funs;	
+	};
 
 };
 
