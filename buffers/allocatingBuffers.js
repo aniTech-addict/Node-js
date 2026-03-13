@@ -3,7 +3,13 @@ const {Buffer} = require('buffer');
 /* Safe Buffer Allocation */
 const mySafeBuffer = Buffer.alloc(10000) // safe allocation of 1000 bytes that are initialized to 0.
 
-/* Unsafe Buffer Allocation */ 
+/* Node has  8 bytes of preallocated buffer that can be used using allocUnsage, this reduces the need for using heap memory to alloc new Buffers.
+NOTE: This preallocated pool can be utilized only using allocUnsafe and not alloc as alloc uses heap to allocated Buffers 
+*/
+
+// poolSize = predefined memory allocation that the Buffer module uses to optimize performance and speed for small buffer allocation.
+ 
+/* Unsafe Buffer Allocation*/ 
 const myUnsafeBuffer = Buffer.allocUnsafe(10000); // allocation is faster but the buffer bytes are not intialized to 0 and may contain sesitive data
 
 /* May log bytes that have some info stored as it has not been cleared*/
@@ -22,3 +28,9 @@ for (let i=0; i<mySafeBuffer.length; i++) {
 		console.log(`Element at pos ${i} has value ${mySafeBuffer[i].toString(2)}`) // Logging in base 2 / binary 
 	}
 }
+
+//========= Extras =========
+/* 
+
+const myAllocUnsafeSlow = Buffer.allocUnsafeSLow(20000);
+*/
