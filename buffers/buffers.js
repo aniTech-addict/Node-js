@@ -44,4 +44,15 @@ console.log(memoryContainer);
 
 console.log();
 console.log('=========buffer as string=========');
-console.log(memoryContainer.toString('hex')); 
+console.log(memoryContainer.toString('hex'));
+
+//Enconding a meaningful message
+console.log('\n====Decoding the buffer in utf-8 format===');
+
+const newMemory = Buffer.alloc(4);
+ 
+newMemory[1] = 0x48;
+newMemory[2] = 0x69;
+newMemory[3] = 0x21;
+
+console.log(newMemory.toString('utf-8'));
