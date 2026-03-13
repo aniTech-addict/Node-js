@@ -55,4 +55,4 @@ newMemory[1] = 0x48;
 newMemory[2] = 0x69;
 newMemory[3] = 0x21;
 
-console.log(newMemory.toString('utf-8'));
+console.log(newMemory.toString('utf-8')); // logs Hi!
