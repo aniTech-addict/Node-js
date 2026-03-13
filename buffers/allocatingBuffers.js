@@ -31,6 +31,7 @@ for (let i=0; i<mySafeBuffer.length; i++) {
 
 //========= Extras =========
 /* 
+When using Buffer.allocUnsafe() to allocate new Buffer instances, allocations less than Buffer.poolSize >>> 1 (4KiB when default poolSize is used) are sliced from a single pre-allocated Buffer. This allows applications to avoid the garbage collection overhead of creating many individually allocated Buffer instances. This approach improves both performance and memory usage by eliminating the need to track and clean up as many individual ArrayBuffer objects.
 
 const myAllocUnsafeSlow = Buffer.allocUnsafeSLow(20000);
 */
