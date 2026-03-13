@@ -5,7 +5,8 @@ const memoryContainer = Buffer.alloc(4);
 
 //  Logging values of the allocated Buffer
 console.log(memoryContainer[0]); //decimal value when logged
-console.log(memoryContainer); // 8 bits = 8/4 = 2 | <00> in hex
+console.log(memoryContainer); // 8 bits = 8/4 = 2 hex digits | <00> in hex
+// one hex digits represents 4 bits of binary
 
 console.log();
 // (1) Modifying values of Buffer
@@ -19,7 +20,7 @@ console.log("\n========Storing negative numbers========");
 // (a) Storing neg numbers:
 /* for storing the neg number ,
 	such as -34,
-	the decimal value is 222, hexadecimal = DE, bits = 1101 1110
+	the decimal value is 222 as the Node reads it as 'unsigned int', hexadecimal = DE, bits = 1101 1110
 
 	the logic is to flip all the bits and add one to get the neg number
 
@@ -29,11 +30,11 @@ console.log("\n========Storing negative numbers========");
 	add one to flipped_bits = neg number stored = 33+1 = 34 (negative number)
 */
 memoryContainer[1] = -34;
-console.log(memoryContainer[1]);
+console.log(memoryContainer[1]); // 222 as node interprets this as unsigned data
 console.log(memoryContainer);
 
 console.log();
-/* (preffered meathod) Using write methods (here) buffer.writeInt8(int value, int offfset) to write 8 bits
+/* (preffered meathod) Using write methods (here) buffer.writeInt8(int value, int offfset) to write 8 bits integer
 * use read methods to log in decimal values. buffer.readInt8 (int offset) 
 */
 memoryContainer.writeInt8(-34, 1) // value, offset
