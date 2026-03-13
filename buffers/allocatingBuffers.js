@@ -33,5 +33,12 @@ for (let i=0; i<mySafeBuffer.length; i++) {
 /* 
 When using Buffer.allocUnsafe() to allocate new Buffer instances, allocations less than Buffer.poolSize >>> 1 (4KiB when default poolSize is used) are sliced from a single pre-allocated Buffer. This allows applications to avoid the garbage collection overhead of creating many individually allocated Buffer instances. This approach improves both performance and memory usage by eliminating the need to track and clean up as many individual ArrayBuffer objects.
 
+BETTER UNDERSTANDING -> the pool slice is used when the buffer to be allocated is less than poolSize >>> 1 (8kib -> 4kib) 
+
+When a buffer is to be stored for long term and is less than 4kib, this can cause performace inefficiency by occupying the pool.
+allocUnsafeSlow allocates buffer from the Heap memory instead of the pool evven if the allocation is of less than 4kib.
+small chunks of useful data then can be copied to the pool when required.
+this keep the pool free for short term buffers.
+
 const myAllocUnsafeSlow = Buffer.allocUnsafeSLow(20000);
 */
