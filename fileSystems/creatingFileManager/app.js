@@ -46,22 +46,28 @@ const captureContent =  async(fileHandler)=> {
 
 async function makeDecisions ( filecontent ) {
 	 console.log("File Content: ",filecontent);
+	
+	const CREATE_FILE = "create a file";
+	const DELETE_FILE = "delete a file";
+	const RENAME_FILE = "rename a file";
+	const WRITE_TO_FILE = "write to file";
 	// create file
 	// delete file
 	// write content to a file
 	// read content from a file
 	// append content to a file
 	// erase content from a file
-	const argument = filecontent.split("$").pop();
-	if (!argument) return;
-	if (filecontent.includes("create file")) {
+	const rawContent = filecontent.split("$");
+	if (rawContent.length==1) return;
+	const argument = rawContent.pop();
+	if (filecontent.includes(CREATE_FILE)) {
 
 		await createFile(argument);
 		
-	} else if ( filecontent.includes("delete file")) {
+	} else if ( filecontent.includes(DELETE_FILE)) {
 		await deleteFile(argument);
 
-	} else if ( filecontent.includes("write to file")) {
+	} else if ( filecontent.includes(WRITE_TO_FILE)) {
 		const sliceAt = argument.indexOf(" ");
 		if (sliceAt === -1) {
 			console.log("file was given no content in args");
@@ -73,6 +79,9 @@ async function makeDecisions ( filecontent ) {
 
 		await writeFile(filename, content);
 		
+	} else if ( filecontent.include(RENAME_FILE)) {
+		const arguments = filecontent.split("$");
+		await renameFile(arguments);
 	}	
 }
 
@@ -85,6 +94,7 @@ async function openFile ( filename ) {
 		if (error.code === "ENOENT") return false;
 	} finally {
 		if (fileHandler) await fileHandler.close();
+		fileHandler.close();	
 	}
 }
 
@@ -96,12 +106,15 @@ async function openFile ( filename ) {
 	}
 
 	// file does not exit, create file
+	const newFileHandler;	
 	try {
-		const newFileHandler = await fs.open(filename, 'w');
+		newFileHandler = await fs.open(filename, 'w');
 		console.log(`File named ${filename} created successfully`);
 		await newFileHandler.close();
 	} catch (error) {
 		console.log("Error creating file", error)
+	} finally {
+		newFileHandler.close();
 	}
 	
 }
@@ -127,5 +140,18 @@ async function writeFile ( filename , content ) {
 		console.log("Content has been written to file ", filename);
 	} catch (error) {
 		console.log("Error occured while writting to file", error);
+		file.close();
 	}
+}
+
+async function renameFile(arguments) {
+	const fileNames  = arguments.split(" ");
+	if (fileNames.length > 2) {
+		console.log("Invalid number of arguments given");
+		return;	
+	}
+	const [prevFilename, newFilename] = fileNames;
+	await fs.rename(prevFilename, newFilename);
+	console.log("File renamed sucessfully");
+	
 }
