@@ -11,7 +11,11 @@ let debouncerTimer;
 		fileHandler.on('change', async() => {
 			clearTimeout(debouncerTimer);
 			debouncerTimer = setTimeout(async()=> {
-				await captureContent(fileHandler)
+				try{
+					await captureContent(fileHandler)
+				} catch ( error ) {
+					console.log(`Error reading file content: ${error}`)
+				}
 			},100);
 		});
 		const watcher = fs.watch("command.txt");
@@ -59,7 +63,7 @@ async function makeDecisions ( filecontent ) {
 	}	
 }
 
-async function fileExists(filename) {
+async function openFile ( filename ) {
 	let fileHandler;
 	try {
 		fileHandler = await fs.open(filename, 'r');
@@ -72,22 +76,21 @@ async function fileExists(filename) {
 }
 
  async function createFile (filename) {
-	const result = await fileExists(filename);
-	if (result) {
+	const fileExists  = await openFile(filename);
+	if ( fileExists ) {
 		console.log("File Already Exists");
 		return;
 	}
-	if ( !result ) { 
-		
-		// file does not exit, create file
-		try {
-			const newFileHandler = await fs.open(filename, 'w');
-			console.log(`File named ${filename} created successfully`);
-			await newFileHandler.close();
-		} catch (error) {
-			console.log("Error creating file", error)
-		}
+
+	// file does not exit, create file
+	try {
+		const newFileHandler = await fs.open(filename, 'w');
+		console.log(`File named ${filename} created successfully`);
+		await newFileHandler.close();
+	} catch (error) {
+		console.log("Error creating file", error)
 	}
+	
 }
 
 async function deleteFile (filename) {
