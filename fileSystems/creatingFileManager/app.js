@@ -1,6 +1,6 @@
 const fs = require('node:fs/promises');
 const {Buffer} = require('node:buffer');
-let debouncerTimer;
+let debounceTimer;
 
 (async() => {	
 	
@@ -9,8 +9,8 @@ let debouncerTimer;
 		const  fileHandler = await fs.open('command.txt', 'r')
 		
 		fileHandler.on('change', async() => {
-			clearTimeout(debouncerTimer);
-			debouncerTimer = setTimeout(async()=> {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(async()=> {
 				try{
 					await captureContent(fileHandler)
 				} catch ( error ) {
@@ -60,6 +60,19 @@ async function makeDecisions ( filecontent ) {
 		
 	} else if ( filecontent.includes("delete file")) {
 		await deleteFile(argument);
+
+	} else if ( filecontent.includes("write to file")) {
+		const sliceAt = argument.indexOf(" ");
+		if (sliceAt === -1) {
+			console.log("file was given no content in args");
+			return;
+		}
+
+		const filename = argument.slice(0, sliceAt);
+		const content  = argument.slice(sliceAt + 1);
+
+		await writeFile(filename, content);
+		
 	}	
 }
 
@@ -94,6 +107,25 @@ async function openFile ( filename ) {
 }
 
 async function deleteFile (filename) {
-	
+	const fileExists = await openFile(filename);
+	if (!fileExists) {
+		console.log("File Not Found");
+		return;
+	}	
+	await fs.unlink(filename);
+	console.log("File Deleted Sucessfully");
 }
 
+async function writeFile ( filename , content ) {
+	try {
+		console.log(content);
+		
+		const file = await fs.open(filename, 'w');
+		const contentBuffer = Buffer.from(content, 'utf-8');
+		console.log(contentBuffer);
+		await file.write(contentBuffer);
+		console.log("Content has been written to file ", filename);
+	} catch (error) {
+		console.log("Error occured while writting to file", error);
+	}
+}
