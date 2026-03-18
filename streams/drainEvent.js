@@ -2,7 +2,6 @@ import { open, createWriteStream } from 'fs'
 import {Buffer} from "buffer";
 (()=> {
     console.time("time")
-    const fileHandler = open("example.txt", "w", ()=>{})
     const stream = createWriteStream("example.txt")
    
     const buff = Buffer.alloc(65535);
