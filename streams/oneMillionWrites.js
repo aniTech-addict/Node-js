@@ -38,7 +38,7 @@ cionst fs = require('fs/promises');
 
 
 //=============== Stream-API ====================
-//standard way, avoiding any backpressure
+//standard way, handling any backpressure
 //1.25s user 0.24s system 114% cpu 0.907 total
 const fs = require("fs"); (async() => {
   console.time("insert time");
