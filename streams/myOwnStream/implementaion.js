@@ -1,4 +1,4 @@
-import createReadStream from './streamv2.js'
+import createReadStream from './stream.js'
 
 const stream = new createReadStream('./oneMillion.txt')
 
